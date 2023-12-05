@@ -2,10 +2,8 @@
 
 library(data.table)
 
-args=commandArgs(TRUE)
-
-infile=args[1]
-minfreq=args[2]
+infile="merged_abundance.tsv"
+minfreq=0.001
 
 outfile=gsub(".tsv", "_recount.tsv", infile)
 outfile_minfreq=gsub(".tsv", paste0("_recount_minfreq_",minfreq,".tsv"), infile)
@@ -33,7 +31,7 @@ for (row in 1:num_rows) {
     genus=barcode_stats$genus[row]
     #print(genus)
     df = subset(count_stats, count_stats$name == genus)
-    df = df[,12]
+    df = df[,11]
     df1 = data.table::tstrsplit(df, ", ")
     df2 = as.matrix(df1)
     class(df2) = "numeric"
@@ -43,7 +41,7 @@ for (row in 1:num_rows) {
     } else {
       family=barcode_stats$family[row]
       df = subset(count_stats, count_stats$name == family)
-      df = df[,12]
+      df = df[,11]
       df1 = data.table::tstrsplit(df, ", ")
       df2 = as.matrix(df1)
       class(df2) = "numeric"
@@ -53,7 +51,7 @@ for (row in 1:num_rows) {
       } else {
         order=barcode_stats$order[row]
         df = subset(count_stats, count_stats$name == order)
-        df = df[,12]
+        df = df[,11]
         df1 = data.table::tstrsplit(df, ", ")
         df2 = as.matrix(df1)
         class(df2) = "numeric"
@@ -63,7 +61,7 @@ for (row in 1:num_rows) {
         } else {
           class=barcode_stats$class[row]
           df = subset(count_stats, count_stats$name == class)
-          df = df[,12]
+          df = df[,11]
           df1 = data.table::tstrsplit(df, ", ")
           df2 = as.matrix(df1)
           class(df2) = "numeric"
@@ -73,13 +71,13 @@ for (row in 1:num_rows) {
           } else {
             phylum=barcode_stats$phylum[row]
             df = subset(count_stats, count_stats$name == phylum)
-            df = df[,12]
+            df = df[,11]
             df1 = data.table::tstrsplit(df, ", ")
             df2 = as.matrix(df1)
             class(df2) = "numeric"
             median = median(df2)
             if (!is.na(median)) {
-              barcode_stats[row,16] = median
+              barcode_stats[row,15] = median
             } else {
               if (barcode_stats$tax_id[row] == "unassigned") {
                 barcode_stats[row,16] = 1
@@ -94,7 +92,7 @@ for (row in 1:num_rows) {
 
 
 colnames(barcode_stats)[colnames(barcode_stats) == "V16"] = "gene.count"
-barcode_stats$new.count = barcode_stats$estimated.counts/barcode_stats$gene.count
+barcode_stats$new.count = barcode_stats$estimated_counts/barcode_stats$gene.count
 barcode_stats$new.abundance = barcode_stats$new.count/sum(barcode_stats$new.count, na.rm = T)
 write.table(barcode_stats, outfile, sep = "\t", quote=F, row.names = F)
 
