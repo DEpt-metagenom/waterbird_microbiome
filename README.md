@@ -13,3 +13,5 @@ merged_wider.csv: This CSV file was used for the statistical community analysis.
 plot_err.R: This R script helps to check for errors and compare with the positive controls.
 
 samples_metadata.xlsx: This Excel file contains the metadata for the collected and used samples
+
+final_analysis.R: This R script contains the community analysis of the microbiome
